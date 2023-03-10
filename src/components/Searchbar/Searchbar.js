@@ -8,6 +8,8 @@ import {
 } from './Searchbar.styled';
 import { BsSearch } from 'react-icons/bs';
 import { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export class Searchbar extends Component {
   state = {
@@ -20,6 +22,10 @@ export class Searchbar extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    if (this.state.searchInput.trim() === '') {
+      return toast.error('Enter a word or phrase in the search field');
+    }
+    this.props.onSubmit(this.state.searchInput);
     this.setState({ searchInput: '' });
   };
 
