@@ -15,12 +15,12 @@ export class ImageGallery extends Component {
     images: [],
     page: 1,
     error: null,
-    loading: false,
+    showLoader: false,
     showButton: false,
   };
 
   onRenderGallery(query, page) {
-    this.setState({ loading: true });
+    this.setState({ showLoader: true });
     getImages(query, page)
       .then(({ hits, total, totalHits }) => {
         if (hits.length) {
@@ -41,7 +41,7 @@ export class ImageGallery extends Component {
         }
       })
       .catch(error => this.setState({ error }))
-      .finally(this.setState({ loading: false }));
+      .finally(this.setState({ showLoader: false }));
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -49,7 +49,12 @@ export class ImageGallery extends Component {
     const nextName = this.props.searchValue;
     const { page } = this.state;
     if (prevName !== nextName) {
-      this.setState({ images: [], page: 1, showButton: false, error: null });
+      this.setState({
+        images: [],
+        page: 1,
+        showButton: false,
+        error: null,
+      });
     }
     if (
       (prevName === nextName && prevState.page !== page) ||
@@ -64,7 +69,7 @@ export class ImageGallery extends Component {
   };
 
   render() {
-    const { images, error, showButton, loading } = this.state;
+    const { images, error, showButton, showLoader } = this.state;
     const { searchValue } = this.props;
     return (
       <GalleryWrapper>
@@ -74,7 +79,7 @@ export class ImageGallery extends Component {
 
         {error && <Message>{error}</Message>}
 
-        {loading && <Loader />}
+        {showLoader && <Loader />}
 
         <Gallery>
           {images.map(({ id, webformatURL, largeImageURL }) => {
@@ -95,98 +100,3 @@ export class ImageGallery extends Component {
     );
   }
 }
-
-// export class ImageGallery extends Component {
-//   state = {
-//     images: [],
-//     page: 1,
-//     error: null,
-//     status: 'idle',
-//     showButton: false,
-//     query: '',
-//   };
-
-// loadMoreBtnHandler = () => {
-//   this.setState({ page: this.state.page + 1 });
-// };
-
-//   onRenderGallery(query, page) {
-//     const { images } = this.state;
-//     getImages(query, page)
-//       .then(({ hits, total, totalHits }) => {
-// if (total === 0) {
-//   return this.setState({
-//     error: `No images or photos of ${query}`,
-//     status: 'rejected',
-//   });
-// }
-// if (hits.length) {
-//   this.setState({ showButton: true });
-// }
-// if (page * 12 >= totalHits) {
-//   this.setState({ showButton: false });
-// }
-//         this.setState({ images: [...images, ...hits], status: 'resolved' });
-//       })
-//       .catch(error => this.setState({ error, status: 'rejected' }));
-//   }
-
-//   componentDidUpdate(prevProps, prevState) {
-//     const prevName = prevProps.searchValue;
-//     const nextName = this.props.searchValue;
-//     const { page, query } = this.state;
-//     if (nextName !== prevName) {
-//       this.setState({ query: nextName });
-//       // this.setState({ status: 'pending', images: [], page: 1 });
-//       // this.onRenderGallery(nextName, page);
-//     }
-//     if (query !== prevState.query) {
-//       this.setState({ images: [], page: 1, status: 'pending' });
-//     }
-//     if (
-//       (nextName !== prevName && page === 1) ||
-//       (nextName === prevName && page !== prevState.page)
-//     ) {
-//       this.onRenderGallery(nextName, page);
-//     }
-//   }
-
-//   render() {
-// const { images, error, status, showButton } = this.state;
-// const { searchValue } = this.props;
-
-//     if (status === 'idle') {
-//       return <p>No Photos</p>;
-//     }
-
-//     if (status === 'pending') {
-//       return <Loader />;
-//     }
-
-//     if (status === 'rejected') {
-//       return <h2>{error.message}</h2>;
-//     }
-
-//     if (status === 'resolved') {
-//       return (
-// <GalleryWrapper>
-//   <Gallery>
-//     {images.map(({ id, webformatURL, largeImageURL }) => {
-//       return (
-//         <GalleryImage key={id}>
-//           <GalleryItem
-//             webImage={webformatURL}
-//             largeImage={largeImageURL}
-//             id={id}
-//             searchValue={searchValue}
-//           />
-//         </GalleryImage>
-//       );
-//     })}
-//   </Gallery>
-//   {showButton && <Button onClick={this.loadMoreBtnHandler} />}
-// </GalleryWrapper>
-//       );
-//     }
-//   }
-// }
