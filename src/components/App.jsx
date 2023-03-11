@@ -7,7 +7,6 @@ import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ToastContainer} from 'react-toastify';
 
-
 export class App extends Component {
   state = {
     searchValue: null,
@@ -23,7 +22,7 @@ export class App extends Component {
         <Layout>
           <GlobalStyle />
           <Searchbar onSubmit={this.handleFormSubmit} />
-          <ImageGallery searchValue={ this.state.searchValue } />
+          <ImageGallery searchValue={this.state.searchValue} />
         </Layout>
         <ToastContainer autoClose={1500} hideProgressBar={true}/>
       </ThemeProvider>
