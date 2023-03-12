@@ -23,6 +23,7 @@ export class ImageGallery extends Component {
     this.setState({ showLoader: true });
     getImages(query, page)
       .then(({ hits, total, totalHits }) => {
+        this.setState({ showLoader: false });
         if (hits.length) {
           this.setState({ showButton: true });
           this.setState(prevState => {
@@ -40,8 +41,7 @@ export class ImageGallery extends Component {
           this.setState({ showButton: false });
         }
       })
-      .catch(error => this.setState({ error }))
-      .finally(this.setState({ showLoader: false }));
+      .catch(error => this.setState({ error }));
   }
 
   componentDidUpdate(prevProps, prevState) {
